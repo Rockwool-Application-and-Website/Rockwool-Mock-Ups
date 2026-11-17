@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bid-Ready Pack Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Nunito+Sans:wght@400;600;700;800&display=swap">
+<style>
+:root{
+  --bg:#f4f4f4; --surface:#ffffff; --surface-2:#eef0f3; --ink:#18202b; --muted:#5b6573;
+  --line:#d9dde3; --accent:#d0021b; --accent-ink:#ffffff; --good:#1f7a52; --good-bg:#e5f3ec;
+  --warn:#9a5b00; --bar-a:#d0021b; --bar-b:#7d8794; --bar-c:#b7bec8; --shadow:0 1px 2px rgba(24,32,43,.06),0 8px 24px rgba(24,32,43,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11151b; --surface:#1a2029; --surface-2:#222a35; --ink:#e8ebef; --muted:#a3acb8;
+    --line:#2f3845; --accent:#ff4d5e; --accent-ink:#1a0005; --good:#5cd39a; --good-bg:#16352a;
+    --warn:#f0b35a; --bar-a:#ff4d5e; --bar-b:#8f99a6; --bar-c:#5c6674; --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11151b; --surface:#1a2029; --surface-2:#222a35; --ink:#e8ebef; --muted:#a3acb8;
+  --line:#2f3845; --accent:#ff4d5e; --accent-ink:#1a0005; --good:#5cd39a; --good-bg:#16352a;
+  --warn:#f0b35a; --bar-a:#ff4d5e; --bar-b:#8f99a6; --bar-c:#5c6674; --shadow:none;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito Sans","Avenir Next",Avenir,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;font-size:15px;line-height:1.5;padding:0 16px 48px}
+.wrap{max-width:860px;margin:0 auto}
+.concept{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin:0 -16px 0;padding:8px 16px;background:var(--surface-2);color:var(--muted);font-size:12px;text-align:center;border-bottom:1px solid var(--line)}
+.concept b{color:var(--ink);font-weight:600}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 0 8px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.01em}
+.brand .ring{width:26px;height:26px;border-radius:50%;border:4px solid var(--accent);border-right-color:transparent;transform:rotate(-45deg)}
+.brand small{display:block;font-weight:500;color:var(--muted);font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+.steps{display:flex;gap:6px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.steps span{padding:4px 10px;border-radius:999px;background:var(--surface-2)}
+.steps span.on{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:20px}
+h1{font-size:clamp(24px,5vw,34px);line-height:1.15;margin:12px 0 8px;text-wrap:balance}
+h2{font-size:18px;margin:0 0 10px;text-wrap:balance}
+h3{font-size:15px;margin:0 0 6px}
+.lede{color:var(--muted);max-width:60ch;margin:0 0 18px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px}
+.chip{font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.grid2{grid-template-columns:1fr}}
+label{display:block;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:0 0 4px}
+input[type=text],input[type=number],input[type=date],select{width:100%;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+input:focus-visible,select:focus-visible,button:focus-visible,.drop:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:2px}
+.drop{margin:14px 0;border:2px dashed var(--line);border-radius:12px;padding:22px 16px;text-align:center;background:var(--surface-2);cursor:pointer;transition:border-color .15s}
+.drop.over,.drop:hover{border-color:var(--accent)}
+.drop strong{display:block;font-size:15px}
+.drop .hint{font-size:12px;color:var(--muted)}
+.file-list{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:6px;text-align:left}
+.file-list li{display:flex;justify-content:space-between;gap:8px;font-family:"IBM Plex Mono",monospace;font-size:12px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 10px;overflow-wrap:anywhere}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
+button{font:inherit;font-weight:600;border-radius:10px;padding:11px 18px;border:1px solid transparent;cursor:pointer}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.note{font-size:12px;color:var(--muted)}
+.hidden{display:none !important}
+/* processing */
+.clock{display:flex;align-items:baseline;gap:8px;margin:4px 0 16px}
+.clock .big{font-family:"IBM Plex Mono",monospace;font-size:34px;font-weight:500;font-variant-numeric:tabular-nums}
+.progress{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin:0 0 18px}
+.progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .5s ease}
+.tasks{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.tasks li{display:grid;grid-template-columns:26px 1fr auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.tasks .dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:12px;color:transparent}
+.tasks li.run .dot{border-color:var(--accent);border-top-color:transparent;animation:spin .8s linear infinite}
+.tasks li.done .dot{background:var(--good);border-color:var(--good);color:#fff}
+.tasks .who{font-size:12px;color:var(--muted)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.tasks li.run .dot{animation:none}.progress i{transition:none}}
+/* pack */
+.packhead{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--good);background:var(--good-bg);padding:5px 10px;border-radius:999px}
+.meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0 4px}
+@media (max-width:640px){.meta{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.meta div{background:var(--surface-2);border-radius:10px;padding:10px}
+.meta span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.meta b{font-variant-numeric:tabular-nums}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin:18px 0 12px;padding-bottom:2px}
+.tabs button{white-space:nowrap;background:var(--surface);border:1px solid var(--line);color:var(--ink);font-size:13px;padding:8px 12px}
+.tabs button[aria-selected=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.panel{display:none}
+.panel.on{display:block}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:13px}
+th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:var(--surface-2);font-weight:600}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:"IBM Plex Mono",monospace}
+tr:last-child td{border-bottom:0}
+.pass{color:var(--good);font-weight:600}
+.callout{margin-top:12px;padding:12px 14px;border-left:4px solid var(--accent);background:var(--surface-2);border-radius:0 10px 10px 0;font-size:13px}
+.bars{display:grid;gap:12px;margin:8px 0}
+.bar-row{display:grid;grid-template-columns:120px 1fr 70px;gap:10px;align-items:center;font-size:13px}
+@media (max-width:480px){.bar-row{grid-template-columns:90px 1fr 60px}}
+.bar{display:flex;height:22px;border-radius:5px;overflow:hidden;background:var(--surface-2);gap:2px}
+.bar i{display:block;height:100%}
+.bar .m{background:var(--bar-a)}.bar .l{background:var(--bar-b)}.bar .w{background:var(--bar-c)}
+.bar-row b{text-align:right;font-variant-numeric:tabular-nums;font-family:"IBM Plex Mono",monospace}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.checklist{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.checklist li{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
+.checklist .tick{flex:0 0 20px;height:20px;border-radius:50%;background:var(--good);color:#fff;display:grid;place-items:center;font-size:12px}
+.next{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
+@media (max-width:640px){.next{grid-template-columns:1fr}}
+.next div{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--surface)}
+.next div.gold{border-color:var(--accent)}
+footer{margin-top:22px;font-size:12px;color:var(--muted);text-align:center}
+@media print{.concept,.steps,.tabs,.row,.no-print{display:none !important}.panel{display:block !important;break-inside:avoid;margin-bottom:16px}body{background:#fff}.card{box-shadow:none}}
+
+/* ROCKWOOL-website-inspired skin */
+.concept{background:#8c0e1c;color:#f3d6d9;border-bottom:0;box-shadow:0 0 0 100vmax #8c0e1c;clip-path:inset(0 -100vmax)}
+.concept b{color:#fff}
+header.top{background:#d0021b;color:#fff;box-shadow:0 0 0 100vmax #d0021b;clip-path:inset(0 -100vmax);padding:16px 0}
+header.top .brand{color:#fff;font-weight:800;text-transform:uppercase;letter-spacing:.02em}
+header.top .brand small{color:#fbdadd}
+header.top .ring{border-color:#fff;border-right-color:transparent}
+.steps span{background:transparent;color:#fbdadd;border:1.5px solid rgba(255,255,255,.45)}
+.steps span.on{background:#fff;color:#d0021b;border-color:#fff}
+.hero{width:100vw;margin:0 0 20px calc(50% - 50vw);padding:30px 16px 26px;text-align:center;color:#fff;background:linear-gradient(180deg,#767676 0%,#9b9b9b 50%,#c9c9c9 100%);position:relative}
+body{overflow-x:hidden}
+@media (max-width:560px){header.top{flex-wrap:wrap}.steps{width:100%}}
+.hero h1{color:#fff;font-weight:800;margin:6px auto 8px;max-width:22ch}
+.hero .lede{color:#f5f5f5;margin:0 auto 16px}
+.hero .chips{justify-content:center;margin:0}
+.hero .chip{background:transparent;border-color:rgba(255,255,255,.7);color:#fff}
+.hero .eyebrow{font-weight:700;font-size:15px}
+h1{font-weight:800}
+.card{border-radius:4px;border-color:#e2e2e2}
+button{border-radius:2px}
+.btn-primary:after{content:" \2192"}
+.tabs{border-bottom:2px solid var(--line);gap:0}
+.tabs button{border:0;border-bottom:3px solid transparent;border-radius:0;background:transparent;color:var(--muted);margin-bottom:-2px}
+.tabs button[aria-selected=true]{background:transparent;color:var(--ink);border-color:var(--accent);border-bottom:3px solid var(--accent)}
+.next div,.meta div,.tbl-wrap,.drop,.tasks li,.checklist li{border-radius:4px}
+.status{border-radius:2px}
+
+/* RockSolid mark: solid hexagon */
+.ring{border:0 !important;transform:none !important;background:#fff !important;clip-path:polygon(25% 6%,75% 6%,100% 50%,75% 94%,25% 94%,0 50%);border-radius:0 !important}
+</style>
+</head>
+<body>
+<div class="concept" role="note"><b>Concept prototype</b> · CBS Case Competition 2026 · fictional project, illustrative figures · not an official ROCKWOOL service or document</div>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><span class="ring" aria-hidden="true"></span><div>Bid-Ready Pack<small>by ROCKWOOL · concept</small></div></div>
+    <nav class="steps" aria-label="Progress"><span id="st1" class="on">1 Submit</span><span id="st2">2 Preparing</span><span id="st3">3 Your pack</span></nav>
+  </header>
+
+  <!-- SCREEN 1: SUBMIT -->
+  <section id="s1">
+    <div class="hero">
+      <div class="eyebrow">Bid-Ready by ROCKWOOL</div>
+      <h1>Send us your project. Get your insulation bid documents in 72 hours.</h1>
+      <p class="lede">Upload the tender files for your medium or large project. Your ROCKWOOL project owner returns a ready-to-submit pack for the insulation part of your bid, free of charge.</p>
+      <div class="chips"><span class="chip">Free</span><span class="chip">≤ 72 hours</span><span class="chip">Projects €130k–400k insulation</span><span class="chip">BR18-ready</span></div>
+    </div>
+    <form class="card" id="f" novalidate>
+      <div class="row" style="margin:0 0 14px;justify-content:space-between">
+        <h2 style="margin:0">Project details</h2>
+        <button type="button" class="btn-ghost" id="sample">Use sample project</button>
+      </div>
+      <div class="grid2">
+        <div><label for="pname">Project name</label><input type="text" id="pname" placeholder="e.g. Nordvest School Extension"></div>
+        <div><label for="ptype">Building type</label>
+          <select id="ptype"><option value="">Select…</option><option>School / education</option><option>Office</option><option>Residential block</option><option>Healthcare</option><option>Housing renovation</option></select></div>
+        <div><label for="parea">Gross floor area (m²)</label><input type="number" id="parea" min="0" placeholder="e.g. 14000"></div>
+        <div><label for="pdead">Tender deadline</label><input type="date" id="pdead"></div>
+        <div><label for="pfirm">Contractor</label><input type="text" id="pfirm" placeholder="Company name"></div>
+        <div><label for="pcontact">Estimator</label><input type="text" id="pcontact" placeholder="Name"></div>
+      </div>
+      <div class="drop" id="drop" tabindex="0" role="button" aria-label="Upload tender files">
+        <strong>Drop tender files here or tap to upload</strong>
+        <span class="hint">Drawings (PDF, IFC), bill of quantities (XLSX), tender description</span>
+        <input type="file" id="file" multiple class="hidden">
+        <ul class="file-list" id="files"></ul>
+      </div>
+      <div class="row">
+        <button type="button" class="btn-primary" id="go">Request Bid-Ready pack</button>
+      </div>
+      <p class="note" id="req">Add a project name, floor area and at least one file, or use the sample project.</p>
+    </form>
+  </section>
+
+  <!-- SCREEN 2: PROCESSING -->
+  <section id="s2" class="hidden" aria-live="polite">
+    <h1>Your pack is being prepared</h1>
+    <p class="lede" id="s2lede">Your project owner and ROCKWOOL Technical Support are working on it. In the prototype, 72 hours runs in a few seconds.</p>
+    <div class="card">
+      <div class="clock"><span class="big" id="hrs">0 h</span><span class="note">of the 72-hour promise</span></div>
+      <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+      <ul class="tasks" id="tasks"></ul>
+      <div class="row"><button type="button" class="btn-ghost" id="skip">Skip to pack</button></div>
+    </div>
+  </section>
+
+  <!-- SCREEN 3: PACK -->
+  <section id="s3" class="hidden">
+    <div class="card">
+      <div class="packhead">
+        <div>
+          <span class="note" id="packid">Pack BR-2027-0142</span>
+          <h1 id="ptitle" style="margin-top:4px">Nordvest School Extension</h1>
+          <span class="status">✓ Ready to submit · delivered in <span id="deliv">68</span> h</span>
+        </div>
+        <button type="button" class="btn-ghost no-print" id="print">Download PDF</button>
+      </div>
+      <div class="meta">
+        <div><span>Contractor</span><b id="mfirm">Eriksen Byg A/S</b></div>
+        <div><span>Floor area</span><b id="marea">14,000 m²</b></div>
+        <div><span>Assemblies</span><b>4</b></div>
+        <div><span>Insulation volume</span><b id="mvol">≈ 1,690 m³</b></div>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Pack sections">
+        <button role="tab" aria-selected="true" data-p="p1">1 Climate data</button>
+        <button role="tab" aria-selected="false" data-p="p2">2 Fire · sound · thermal</button>
+        <button role="tab" aria-selected="false" data-p="p3">3 Installed cost</button>
+        <button role="tab" aria-selected="false" data-p="p4">4 Quantities &amp; plan</button>
+        <button role="tab" aria-selected="false" data-p="p5">5 Sign-off</button>
+      </div>
+
+      <div class="panel on" id="p1" role="tabpanel">
+        <h2>Climate data for the BR18 calculation</h2>
+        <p class="note">Product-specific EPD values per assembly, formatted for import into LCAbyg. Illustrative values.</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Assembly</th><th>Product</th><th>EPD reference</th><th class="num">kg CO₂e / m² assembly</th></tr></thead>
+          <tbody>
+            <tr><td>External wall, timber frame</td><td>Flexibatts 37, 290 mm</td><td>EPD-DK-xxxx</td><td class="num">7.9</td></tr>
+            <tr><td>Rainscreen facade</td><td>Facadebatts, 200 mm</td><td>EPD-DK-xxxx</td><td class="num">9.6</td></tr>
+            <tr><td>Internal partition</td><td>Partition batts, 95 mm</td><td>EPD-DK-xxxx</td><td class="num">2.1</td></tr>
+            <tr><td>Pitched roof / loft</td><td>A-Batts 37, 400 mm</td><td>EPD-DK-xxxx</td><td class="num">8.4</td></tr>
+          </tbody></table></div>
+        <div class="callout">Ready to paste into the building's climate calculation: no data hunting for the estimator.</div>
+      </div>
+
+      <div class="panel" id="p2" role="tabpanel">
+        <h2>Fire, sound and thermal documentation per assembly</h2>
+        <p class="note">Checked against the project's requirements. Declarations of performance attached. Illustrative values.</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Assembly</th><th>Reaction to fire</th><th class="num">U-value W/m²K</th><th class="num">Sound Rw dB</th><th>Requirement</th></tr></thead>
+          <tbody>
+            <tr><td>External wall</td><td>A1</td><td class="num">0.14</td><td class="num">—</td><td class="pass">✓ Met</td></tr>
+            <tr><td>Rainscreen facade</td><td>A1</td><td class="num">0.17</td><td class="num">—</td><td class="pass">✓ Met</td></tr>
+            <tr><td>Internal partition</td><td>A1</td><td class="num">—</td><td class="num">52</td><td class="pass">✓ Met</td></tr>
+            <tr><td>Pitched roof / loft</td><td>A1</td><td class="num">0.09</td><td class="num">—</td><td class="pass">✓ Met</td></tr>
+          </tbody></table></div>
+        <div class="callout">Every assembly documented once, in one place, so a substitute would have to be re-documented from scratch.</div>
+      </div>
+
+      <div class="panel" id="p3" role="tabpanel">
+        <h2>Installed cost per m² finished wall</h2>
+        <p class="note">External wall assembly, material + labour + waste. Compared at the level of the finished wall, not the bag. Illustrative DKK figures.</p>
+        <div class="legend"><span><i style="background:var(--bar-a)"></i>Material</span><span><i style="background:var(--bar-b)"></i>Labour</span><span><i style="background:var(--bar-c)"></i>Waste &amp; handling</span></div>
+        <div class="bars" id="bars"></div>
+        <div class="callout">Stone wool costs more per bag but is close per finished wall, and adds A1 fire safety and acoustics with no extra layers.</div>
+      </div>
+
+      <div class="panel" id="p4" role="tabpanel">
+        <h2>Quantities and delivery plan</h2>
+        <p class="note">Taken from the tender drawings. Each phase is confirmed 7–10 working days before delivery. Illustrative figures.</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Phase</th><th>Assembly</th><th class="num">Area m²</th><th class="num">Volume m³</th><th>Planned delivery</th></tr></thead>
+          <tbody id="qty"></tbody></table></div>
+        <div class="callout">The plan doubles as ROCKWOOL's production forecast, so special dimensions are scheduled in time.</div>
+      </div>
+
+      <div class="panel" id="p5" role="tabpanel">
+        <h2>Sign-off documents</h2>
+        <ul class="checklist">
+          <li><span class="tick">✓</span><span>Declarations of performance (DoP) and CE marking for all products</span></li>
+          <li><span class="tick">✓</span><span>EPDs for the BR18 climate calculation</span></li>
+          <li><span class="tick">✓</span><span>Fire classification (Euroclass A1) and acoustic test references</span></li>
+          <li><span class="tick">✓</span><span>Installation guides for each assembly</span></li>
+          <li><span class="tick">✓</span><span>Equivalence sheet: what a substitute would need to re-document</span></li>
+        </ul>
+      </div>
+
+      <h2 style="margin-top:22px">Next steps</h2>
+      <div class="next">
+        <div><h3>1 · Submit your bid</h3><p class="note">Attach the pack to the insulation section of your tender.</p></div>
+        <div><h3>2 · Won the job? Tell us</h3><p class="note">Contact your ROCKWOOL project owner. We confirm quantities, the phase plan and delivery dates with you.</p></div>
+        <div class="gold"><h3>3 · Join RockSolid</h3><p class="note">RockSolid is our free membership: recycling credits, faster packs and delivery benefits that grow with your purchases.</p></div>
+      </div>
+
+      <h2 style="margin-top:22px">RockSolid membership tiers</h2>
+      <p class="note" style="margin-top:-4px">Free to join. Existing ROCKWOOL customers start at Bronze; tiers follow annual purchases and are reviewed every 24 months, with a 1-year grace period.</p>
+      <div class="next">
+        <div><h3>Bronze</h3><p class="note"><b>Qualify:</b> free (existing customers join automatically)</p><p class="note">Bid-Ready packs on request · €5 per returned bag · standard delivery via distributor · standard technical support</p></div>
+        <div><h3>Silver</h3><p class="note"><b>Qualify:</b> €50k+ a year with ROCKWOOL</p><p class="note">Priority packs within 72 h · €6 per returned bag · booked fixed-day delivery on direct full loads</p></div>
+        <div class="gold"><h3>Gold</h3><p class="note"><b>Qualify:</b> €150k+ a year with ROCKWOOL</p><p class="note">All bids, including large, in 48 h · €7 per returned bag · fixed-day delivery + capped credit if late · advanced technical support · first in line for renovation leads</p></div>
+      </div>
+
+      <div class="callout" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">
+        <span><b>Your ROCKWOOL project owner</b><br>Direct line and email included in the full pack (fictional in this prototype)</span>
+        <button type="button" class="btn-primary no-print" id="contact">Contact your project owner</button>
+      </div>
+      <p class="note hidden" id="contactmsg" role="status">Prototype: in the real service this opens a call or email with your project owner.</p>
+      <div class="row no-print"><button type="button" class="btn-ghost" id="restart">Start a new request</button></div>
+    </div>
+  </section>
+
+  <footer>Prototype for illustration only. Product names are used to show the concept; all project data and figures are fictional or illustrative.</footer>
+</div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var files=[];
+  var sample=false;
+  function fmt(n){return n.toLocaleString('en-US')}
+  function check(){
+    var ok=!!($('pname').value.trim() && Number($('parea').value)>0 && files.length>0);
+    $('req').classList.toggle('hidden',ok);
+    $('req').style.color='';
+    return ok;
+  }
+  function renderFiles(){
+    var ul=$('files'); ul.innerHTML='';
+    files.forEach(function(f){
+      var li=document.createElement('li');
+      var a=document.createElement('span'); a.textContent=f.name;
+      var b=document.createElement('span'); b.textContent=f.size;
+      li.appendChild(a); li.appendChild(b); ul.appendChild(li);
+    });
+    check();
+  }
+  function addFiles(list){
+    for(var i=0;i<list.length;i++){
+      var kb=Math.max(1,Math.round(list[i].size/1024));
+      files.push({name:list[i].name,size:kb>1024?(kb/1024).toFixed(1)+' MB':kb+' KB'});
+    }
+    renderFiles();
+  }
+  ['pname','parea','ptype','pdead','pfirm','pcontact'].forEach(function(id){$(id).addEventListener('input',check)});
+  var drop=$('drop');
+  drop.addEventListener('click',function(e){ if(e.target.tagName!=='INPUT') $('file').click(); });
+  drop.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){e.preventDefault();$('file').click();} });
+  $('file').addEventListener('change',function(e){addFiles(e.target.files)});
+  ['dragenter','dragover'].forEach(function(t){drop.addEventListener(t,function(e){e.preventDefault();drop.classList.add('over')})});
+  ['dragleave','drop'].forEach(function(t){drop.addEventListener(t,function(e){e.preventDefault();drop.classList.remove('over')})});
+  drop.addEventListener('drop',function(e){ if(e.dataTransfer&&e.dataTransfer.files) addFiles(e.dataTransfer.files); });
+
+  $('sample').addEventListener('click',function(){
+    sample=true;
+    $('pname').value='Nordvest School Extension';
+    $('ptype').value='School / education';
+    $('parea').value='14000';
+    var d=new Date(); d.setDate(d.getDate()+21); $('pdead').value=d.toISOString().slice(0,10);
+    $('pfirm').value='Eriksen Byg A/S';
+    $('pcontact').value='M. Eriksen';
+    files=[{name:'A-100_plans_facades.pdf',size:'18.4 MB'},{name:'Bill_of_quantities_insulation.xlsx',size:'212 KB'},{name:'Tender_description_K07.pdf',size:'1.6 MB'},{name:'Model_ARK.ifc',size:'46.0 MB'}];
+    renderFiles();
+  });
+
+  var TASKS=[
+    ['Reading drawings and bill of quantities','Project owner'],
+    ['Matching ROCKWOOL assemblies to the specification','Technical Support'],
+    ['Climate data for the BR18 calculation','Technical Support'],
+    ['Fire, sound and thermal documentation','Technical Support'],
+    ['Installed-cost comparison per finished wall','Project owner'],
+    ['Quantities and delivery plan','Project owner'],
+    ['Quality check and sign-off','Project owner']
+  ];
+  var timer=null;
+  function show(n){
+    ['s1','s2','s3'].forEach(function(s,i){$(s).classList.toggle('hidden',i!==n-1)});
+    ['st1','st2','st3'].forEach(function(s,i){$(s).classList.toggle('on',i===n-1)});
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function buildPack(){
+    var name=$('pname').value.trim()||'Nordvest School Extension';
+    var area=Number($('parea').value)||14000;
+    var firm=$('pfirm').value.trim()||'Your company';
+    var k=area/14000;
+    $('ptitle').textContent=name;
+    $('mfirm').textContent=firm;
+    $('marea').textContent=fmt(Math.round(area))+' m²';
+    var rows=[
+      ['Phase 1','External wall',3600,0.29,'Week 18'],
+      ['Phase 1','Rainscreen facade',4200,0.20,'Week 20'],
+      ['Phase 2','Internal partition',6500,0.095,'Week 26'],
+      ['Phase 2','Pitched roof / loft',1300,0.40,'Week 24']
+    ];
+    var tb=$('qty'); tb.innerHTML=''; var tot=0;
+    rows.forEach(function(r){
+      var a=Math.round(r[2]*k), v=Math.round(a*r[3]); tot+=v;
+      var tr=document.createElement('tr');
+      [r[0],r[1],fmt(a),fmt(v),r[4]].forEach(function(c,i){var td=document.createElement('td'); td.textContent=c; if(i===2||i===3) td.className='num'; tr.appendChild(td)});
+      tb.appendChild(tr);
+    });
+    $('mvol').textContent='≈ '+fmt(tot)+' m³';
+    var data=[['Stone wool',178,214,22],['Glass wool',152,226,30],['PIR boards',236,198,36]];
+    var max=0; data.forEach(function(d){max=Math.max(max,d[1]+d[2]+d[3])});
+    var bars=$('bars'); bars.innerHTML='';
+    data.forEach(function(d){
+      var t=d[1]+d[2]+d[3];
+      var row=document.createElement('div'); row.className='bar-row';
+      var l=document.createElement('span'); l.textContent=d[0];
+      var bar=document.createElement('div'); bar.className='bar'; bar.setAttribute('role','img'); bar.setAttribute('aria-label',d[0]+': material '+d[1]+', labour '+d[2]+', waste '+d[3]+', total '+t+' DKK per m²');
+      bar.style.width=(t/max*100)+'%';
+      [['m',d[1]],['l',d[2]],['w',d[3]]].forEach(function(p){var i=document.createElement('i'); i.className=p[0]; i.style.flex=p[1]+' 0 0'; bar.appendChild(i)});
+      var holder=document.createElement('div'); holder.appendChild(bar);
+      var b=document.createElement('b'); b.textContent=t+' kr';
+      row.appendChild(l); row.appendChild(holder); row.appendChild(b); bars.appendChild(row);
+    });
+    var h=60+Math.floor(Math.random()*11); $('deliv').textContent=h;
+    $('packid').textContent='Pack BR-2027-0'+(100+Math.floor(Math.random()*900));
+  }
+  function run(){
+    show(2);
+    var ul=$('tasks'); ul.innerHTML='';
+    TASKS.forEach(function(t){
+      var li=document.createElement('li');
+      li.innerHTML='<span class="dot">✓</span><span></span><span class="who"></span>';
+      li.children[1].textContent=t[0]; li.children[2].textContent=t[1];
+      ul.appendChild(li);
+    });
+    var i=0, items=ul.children, n=items.length;
+    items[0].classList.add('run');
+    timer=setInterval(function(){
+      items[i].classList.remove('run'); items[i].classList.add('done'); i++;
+      var hrs=Math.round(i/n*68);
+      $('hrs').textContent=hrs+' h';
+      $('bar').style.width=(i/n*100)+'%';
+      if(i<n){ items[i].classList.add('run'); }
+      else { clearInterval(timer); setTimeout(finish,600); }
+    },850);
+  }
+  function finish(){ clearInterval(timer); buildPack(); show(3); }
+  $('f').addEventListener('submit',function(e){e.preventDefault();});
+  $('go').addEventListener('click',function(){
+    if(check()){ run(); }
+    else { $('req').classList.remove('hidden'); $('req').style.color='var(--accent)'; $('req').textContent='Please add a project name, floor area and at least one file, or tap "Use sample project".'; }
+  });
+  $('skip').addEventListener('click',finish);
+  $('print').addEventListener('click',function(){window.print()});
+  $('contact').addEventListener('click',function(){$('contactmsg').classList.remove('hidden')});
+  $('restart').addEventListener('click',function(){ files=[]; renderFiles(); $('f').reset(); check(); show(1); });
+  document.querySelectorAll('.tabs button').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      document.querySelectorAll('.tabs button').forEach(function(b){b.setAttribute('aria-selected','false')});
+      document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on')});
+      btn.setAttribute('aria-selected','true'); $(btn.getAttribute('data-p')).classList.add('on');
+    });
+  });
+  check();
+})();
+</script>
+</body>
+</html>
